@@ -13,6 +13,7 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
   const [shouldShowOnboarding, setShouldShowOnboarding] = useState(true)
   const [isRecording, setIsRecording] = useState(false)
   const [content, setContent] = useState('')
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   function handleStartEditor() {
     setShouldShowOnboarding(false)
@@ -82,10 +83,26 @@ export function NewNoteCard({ onNoteCreated }: NewNoteCardProps) {
     if (speechRecognition !== null) {
       speechRecognition.stop()
     }
+
+    if (content === '') {
+      setShouldShowOnboarding(true)
+    }
+  }
+
+  function handleOpenOrCloseDialog() {
+    if (isDialogOpen) {
+      setIsDialogOpen(false)
+
+      setContent('')
+      setShouldShowOnboarding(true)
+      handleStopRecording()
+    }
+
+    setIsDialogOpen(true)
   }
 
   return (
-    <Dialog.Root>
+    <Dialog.Root onOpenChange={handleOpenOrCloseDialog}>
       <Dialog.Trigger
         className='rounded-md flex flex-col bg-slate-700 text-left p-5 gap-3 outline-none
                   hover:ring-2 hover:ring-slate-600 focus-visible:ring-2 focus-visible:ring-lime-400'>
